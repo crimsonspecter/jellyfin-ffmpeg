@@ -184,3 +184,18 @@ Index: FFmpeg/libavcodec/bsf/h265_metadata.c
      { NULL }
  };
  
+Index: FFmpeg/libavcodec/cbs_h2645.c
+===================================================================
+--- FFmpeg.orig/libavcodec/cbs_h2645.c
++++ FFmpeg/libavcodec/cbs_h2645.c
+@@ -1819,7 +1819,9 @@ static int cbs_h2645_unit_requires_zero_
+     if (codec_id == AV_CODEC_ID_H264)
+         return type == H264_NAL_SPS || type == H264_NAL_PPS;
+     if (codec_id == AV_CODEC_ID_HEVC)
+-        return type == HEVC_NAL_VPS || type == HEVC_NAL_SPS || type == HEVC_NAL_PPS;
++        // DOVI RPU NAL unit requires a zero byte for interoperability with certain decoders
++        return type == HEVC_NAL_VPS || type == HEVC_NAL_SPS ||
++               type == HEVC_NAL_PPS || type == HEVC_NAL_UNSPEC62;
+     if (codec_id == AV_CODEC_ID_VVC)
+         return type >= VVC_OPI_NUT && type <= VVC_SUFFIX_APS_NUT;
+     return 0;
